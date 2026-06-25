@@ -541,95 +541,46 @@ class createElementsMixin:
         
         
         # ── Chapter 3: Additional Markers (Joints and Forces) ─────────────────
-        if self.case == 'PS':
-            joint_markers = [
-                'Ground.Ground_MomVV_0d', 'Ground.FixFemToGround', 'Ground.FixTibToGround',        # 1
-                'Ground.Ground_ForceAP_0d', 'Tib.FixTrayToTib', 'InsertBase.FixInsertBaseToTray', 'Fib.FixFibToTib',  # 2
-                'Tray.FixTrayToTib', 'Tray.FixInsertBaseToTray', 'Tib.FixFibToTib',                # 3
-                'InsertPost.FixInsertPostToTray', 'Tray.FixInsertPostToTray',                       # 3a
-                'InsertMed.FixInsertMedToTray', 'Tray.FixInsertMedToTray',                         # 3b
-                'InsertLat.FixInsertLatToTray', 'Tray.FixInsertLatToTray',                         # 3c
-                'FemComp.FixFemCompToFem', 'Fem.FixFemToGround',                                   # 4
-                'Fem.FixFemCompToFem', 'Fem.Axial_Constrain', 'Ground.FixFlex_0d',                 # 5
-                'Fem.Global_Origin', 'Fem.Fem_APAxis_0d',                                          # 6
-                'Tib.FixTibToGround', 'Tib.Axial_Constraint', 'Fem.Axial_Constraint',             # 7
-                'Tib.FixFlex_0d', 'Tib.Tib_FlexionAxis_0d', 'Tib.TibRef',                        # 8
-                'Tib.TibRef_AtFemOrigin', 'Tib.Tib_MomVV_0d', 'Tib.Tib_ForceAP_0d',             # 9
-                'Tib.Tib_MomIE', 'Tib.Tib_ForceCD', 'Tib.Tib_ForceCD_2', 'Tib.Tib_MomIE_2',   #10
-                'Ground.Ground_FemFlexionJoint', 'Fem.Fem_FemFlexionJoint',  #11
-            ]
-            locations = (
-                [[0,0,0]]*3 #1
-                + [[0,0,0]]*4 #2
-                + [[0,0,0]]*3 #3
-                + [[0,0,0]]*2 #3a
-                + [[0,0,0]]*2 #3b
-                + [[0,0,0]]*2 #3c
-                + [[0,0,0]]*2 #4
-                + [[0,0,0]]*3 #5
-                + [[0,0,0]]*2 #6
-                + [[0,0,0]]*3 #7
-                + [[0,0,0]]*2 + euler_xyz_TwrtF[:3].tolist() #8
-                + [[0,0,0]]*3 #9
-                + [[0,0,0]]*4 #10
-                + [[0,0,0]]*2 #11
-            )
-            orientations = (
-                [tfm2euler123[3:6].tolist(), [0,0,0], [0,0,0]]                           # 1
-                + [ap_marker_xyz123[3:6].tolist(), [0,0,0], [0,0,0], [0,0,0]]             # 2
-                + [[0,0,0]]*3                                                               # 3
-                + [[0,0,0]]*2                                                               # 3a
-                + [[0,0,0]]*2                                                               # 3b
-                + [[0,0,0]]*2                                                               # 3c
-                + [[0,0,0]]*2                                                               # 4
-                + [[0,0,0], [0,0,0], [90,90,0]]                                            # 5
-                + [[0,0,0], ap_marker_xyz123[3:6].tolist()]                                # 6
-                + [[0,0,0], pd_marker_xyz123[3:6].tolist(), pd_marker_xyz123[3:6].tolist()] # 7
-                + [[0,0,0], [0,0,0], tfm2euler123[3:6].tolist()]                         # 8
-                + [tfm2euler123[3:6].tolist(), ap_marker_xyz123[3:6].tolist(), ap_marker_xyz123[3:6].tolist()]  # 9
-                + [pd_marker_xyz123[3:6].tolist()]*4
-                + [[90,0,0], [90,0,0]]
-            )
-        else:
-            joint_markers = [
-                'Ground.Ground_MomVV_0d', 'Ground.FixFemToGround', 'Ground.FixTibToGround',        # 1
-                'Ground.Ground_ForceAP_0d', 'Tib.FixTrayToTib', 'Insert.FixInsertToTray', 'Fib.FixFibToTib',  # 2
-                'Tray.FixTrayToTib', 'Tray.FixInsertToTray', 'Tib.FixFibToTib',                   # 3
-                'FemComp.FixFemCompToFem', 'Fem.FixFemToGround',                                   # 4
-                'Fem.FixFemCompToFem', 'Fem.Axial_Constrain', 'Ground.FixFlex_0d',                 # 5
-                'Fem.Global_Origin', 'Fem.Fem_APAxis_0d',                                          # 6
-                'Tib.FixTibToGround', 'Tib.Axial_Constraint', 'Fem.Axial_Constraint',             # 7
-                'Tib.FixFlex_0d', 'Tib.Tib_FlexionAxis_0d', 'Tib.TibRef',                        # 8
-                'Tib.TibRef_AtFemOrigin', 'Tib.Tib_MomVV_0d', 'Tib.Tib_ForceAP_0d',             # 9
-                'Tib.Tib_MomIE', 'Tib.Tib_ForceCD', 'Tib.Tib_ForceCD_2', 'Tib.Tib_MomIE_2',    #10
-                'Ground.Ground_FemFlexionJoint', 'Fem.Fem_FemFlexionJoint',   #11
-            ]
-            locations = (
-                [[0,0,0]]*3  #1
-                + [[0,0,0]]*4 #2
-                + [[0,0,0]]*3 #3
-                + [[0,0,0]]*2 #4
-                + [[0,0,0]]*3 #5
-                + [[0,0,0]]*2 #6
-                + [[0,0,0]]*3 #7
-                + [[0,0,0]]*2 + [euler_xyz_TwrtF[:3].tolist()] #8
-                + [[0,0,0]]*3 #9
-                + [[0,0,0]]*4 #10
-                + [[0,0,0]]*2 #11
-            )
-            orientations = (
-                [euler_xyz_TwrtF[3:6].tolist(), [0,0,0], [0,0,0]]                           # 1
-                + [ap_marker_xyz123[3:6].tolist(), [0,0,0], [0,0,0], [0,0,0]]             # 2
-                + [[0,0,0]]*3                                                               # 3
-                + [[0,0,0]]*2                                                               # 4
-                + [[0,0,0], [0,0,0], [90,90,0]]                                            # 5
-                + [[0,0,0], ap_marker_xyz123[3:6].tolist()]                                # 6
-                + [[0,0,0], pd_marker_xyz123[3:6].tolist(), pd_marker_xyz123[3:6].tolist()] # 7
-                + [[0,0,0], [0,0,0], euler_xyz_TwrtF[3:6].tolist()]                         # 8
-                + [euler_xyz_TwrtF[3:6].tolist(), ap_marker_xyz123[3:6].tolist(), ap_marker_xyz123[3:6].tolist()]  # 9
-                + [pd_marker_xyz123[3:6].tolist()]*4
-                + [[90,0,0], [90,0,0]]
-            )
+    
+        joint_markers = [
+            'Ground.Ground_MomVV_0d', 'Ground.FixFemToGround', 'Ground.FixTibToGround',        # 1
+            'Ground.Ground_ForceAP_0d', 'Tib.FixTrayToTib', 'Insert.FixInsertToTray', 'Fib.FixFibToTib',  # 2
+            'Tray.FixTrayToTib', 'Tray.FixInsertToTray', 'Tib.FixFibToTib',                   # 3
+            'FemComp.FixFemCompToFem', 'Fem.FixFemToGround',                                   # 4
+            'Fem.FixFemCompToFem', 'Fem.Axial_Constrain', 'Ground.FixFlex_0d',                 # 5
+            'Fem.Global_Origin', 'Fem.Fem_APAxis_0d',                                          # 6
+            'Tib.FixTibToGround', 'Tib.Axial_Constraint', 'Fem.Axial_Constraint',             # 7
+            'Tib.FixFlex_0d', 'Tib.Tib_FlexionAxis_0d', 'Tib.TibRef',                        # 8
+            'Tib.TibRef_AtFemOrigin', 'Tib.Tib_MomVV_0d', 'Tib.Tib_ForceAP_0d',             # 9
+            'Tib.Tib_MomIE', 'Tib.Tib_ForceCD', 'Tib.Tib_ForceCD_2', 'Tib.Tib_MomIE_2',    #10
+            'Ground.Ground_FemFlexionJoint', 'Fem.Fem_FemFlexionJoint',   #11
+        ]
+        locations = (
+            [[0,0,0]]*3  #1
+            + [[0,0,0]]*4 #2
+            + [[0,0,0]]*3 #3
+            + [[0,0,0]]*2 #4
+            + [[0,0,0]]*3 #5
+            + [[0,0,0]]*2 #6
+            + [[0,0,0]]*3 #7
+            + [[0,0,0]]*2 + [euler_xyz_TwrtF[:3].tolist()] #8
+            + [[0,0,0]]*3 #9
+            + [[0,0,0]]*4 #10
+            + [[0,0,0]]*2 #11
+        )
+        orientations = (
+            [euler_xyz_TwrtF[3:6].tolist(), [0,0,0], [0,0,0]]                           # 1
+            + [ap_marker_xyz123[3:6].tolist(), [0,0,0], [0,0,0], [0,0,0]]             # 2
+            + [[0,0,0]]*3                                                               # 3
+            + [[0,0,0]]*2                                                               # 4
+            + [[0,0,0], [0,0,0], [90,90,0]]                                            # 5
+            + [[0,0,0], ap_marker_xyz123[3:6].tolist()]                                # 6
+            + [[0,0,0], pd_marker_xyz123[3:6].tolist(), pd_marker_xyz123[3:6].tolist()] # 7
+            + [[0,0,0], [0,0,0], euler_xyz_TwrtF[3:6].tolist()]                         # 8
+            + [euler_xyz_TwrtF[3:6].tolist(), ap_marker_xyz123[3:6].tolist(), ap_marker_xyz123[3:6].tolist()]  # 9
+            + [pd_marker_xyz123[3:6].tolist()]*4
+            + [[90,0,0], [90,0,0]]
+        )
             
         fid.write('! ----- Joint Markers ----- !\n!\n')
         for marker, loc, ori in zip(joint_markers, locations, orientations):
@@ -642,14 +593,10 @@ class createElementsMixin:
             
         
         # ── Chapter 4: Tibiofemoral Contacts ──────────────────────────────────
-        if self.case == 'PS':
-            contact_names = ['FCIContPost', 'FCIContMed', 'FCIContLat']
-            i_geometries  = ['FemComp.SOLID2', 'FemComp.SOLID2', 'FemComp.SOLID2']
-            j_geometries  = ['InsertPost.SOLID3', 'InsertMed.SOLID4', 'InsertLat.SOLID5']
-        else:
-            contact_names = ['FCICont']
-            i_geometries  = ['FemComp.SOLID2']
-            j_geometries  = ['Insert.SOLID3']
+        contact_names = ['FCICont']
+        i_geometries  = ['FemComp.SOLID2']
+        j_geometries  = ['Insert.SOLID3']
+            
  
         fid.write('! ----- Contact Forces ----- !\n!\n')
         for cname, i_geom, j_geom in zip(contact_names, i_geometries, j_geometries):
@@ -675,26 +622,9 @@ class createElementsMixin:
             fid.write('!\n')
  
         # ── Chapter 5: Joints and Motion Elements ─────────────────────────────
-        if self.case == 'PS':
-            fixed_joints = [
-                'FixFemCompToFem', 'FixFemToGround', 'FixInsertBaseToTray',
-                'FixInsertPostToTray', 'FixInsertMedToTray', 'FixInsertLatToTray',
-                'FixTrayToTib', 'FixFibToTib', 'FixTibToGround',
-            ]
-            i_markers = [
-                'FemComp.FixFemCompToFem', 'Fem.FixFemToGround', 'Tray.FixInsertBaseToTray',
-                'Tray.FixInsertPostToTray', 'Tray.FixInsertMedToTray', 'Tray.FixInsertLatToTray',
-                'Tray.FixTrayToTib', 'Fib.FixFibToTib', 'Tib.FixTibToGround',
-            ]
-            j_markers = [
-                'Fem.FixFemCompToFem', 'ground.FixFemToGround', 'InsertBase.FixInsertBaseToTray',
-                'InsertPost.FixInsertPostToTray', 'InsertMed.FixInsertMedToTray', 'InsertLat.FixInsertLatToTray',
-                'Tib.FixTrayToTib', 'Tib.FixFibToTib', 'ground.FixTibToGround',
-            ]
-        else:
-            fixed_joints = ['FixFemCompToFem', 'FixFemToGround', 'FixInsertToTray', 'FixTrayToTib', 'FixFibToTib', 'FixTibToGround']
-            i_markers    = ['FemComp.FixFemCompToFem', 'Fem.FixFemToGround', 'Tray.FixInsertToTray', 'Tray.FixTrayToTib', 'Fib.FixFibToTib', 'Tib.FixTibToGround']
-            j_markers    = ['Fem.FixFemCompToFem', 'ground.FixFemToGround', 'Insert.FixInsertToTray', 'Tib.FixTrayToTib', 'Tib.FixFibToTib', 'ground.FixTibToGround']
+        fixed_joints = ['FixFemCompToFem', 'FixFemToGround', 'FixInsertToTray', 'FixTrayToTib', 'FixFibToTib', 'FixTibToGround']
+        i_markers    = ['FemComp.FixFemCompToFem', 'Fem.FixFemToGround', 'Tray.FixInsertToTray', 'Tray.FixTrayToTib', 'Fib.FixFibToTib', 'Tib.FixTibToGround']
+        j_markers    = ['Fem.FixFemCompToFem', 'ground.FixFemToGround', 'Insert.FixInsertToTray', 'Tib.FixTrayToTib', 'Tib.FixFibToTib', 'ground.FixTibToGround']
 
         
         fid.write('! ----- Fixed Joints ----- !\n!\n')
@@ -1004,16 +934,9 @@ class createElementsMixin:
             fid.write('!\n')
  
         # ── Chapter 10: Density Assignment ───────────────────────────────────
-        if self.case == 'PS':
-            parts = ['Fem', 'FemComp', 'InsertPost', 'InsertMed', 'InsertLat', 'InsertBase', 'Tray', 'Tib', 'Fib']
-            density_dvs = [
-                'BoneDensity', 'FemCompDensity', 'InsertDensity',
-                'InsertDensity', 'InsertDensity', 'InsertDensity',
-                'TrayDensity', 'BoneDensity', 'BoneDensity',
-            ]
-        else:
-            parts = ['Fem', 'FemComp', 'Insert', 'Tray', 'Tib', 'Fib']
-            density_dvs = ['BoneDensity', 'FemCompDensity', 'InsertDensity', 'TrayDensity', 'BoneDensity', 'BoneDensity']
+        
+        parts = ['Fem', 'FemComp', 'Insert', 'Tray', 'Tib', 'Fib']
+        density_dvs = ['BoneDensity', 'FemCompDensity', 'InsertDensity', 'TrayDensity', 'BoneDensity', 'BoneDensity']
  
         fid.write('! ----- Density Assignment(& cm markers off) ----- !\n!\n')
         for part, ddv in zip(parts, density_dvs):

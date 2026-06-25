@@ -473,12 +473,6 @@ class SMCLMixin:
             fid.write(f'entity attr entity_name=.{model_name}.{ligament} active=off dependents_active=off\n')
         fid.write(f'entity attr entity_name=.{model_name}.Constraint1_ACLForce active=off dependents_active=off\n')
         fid.write(f'entity attr entity_name=.{model_name}.Constraint2_ACLForce active=off dependents_active=off\n')
-        if self.case == 'PS':
-            cruciate_liagments = ['PCL_1','PCL_2','PCL_3','PCL_4','PCL_5','PCL_6','PCL_7']
-            for ligament in cruciate_liagments:
-                fid.write(f'entity attr entity_name=.{model_name}.{ligament} active=off dependents_active=off\n')
-            fid.write(f'entity attr entity_name=.{model_name}.Constraint1_PCLForce active=off dependents_active=off\n')
-            fid.write(f'entity attr entity_name=.{model_name}.Constraint2_PCLForce active=off dependents_active=off\n')
         
         
         # ── Write Binary File ───────────────────────────────────────────────

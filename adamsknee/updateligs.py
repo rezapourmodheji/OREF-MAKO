@@ -148,10 +148,7 @@ class UpdateLigsMixin:
             fid.write(f' real_value = {dval} \n!\n')
 
         target_ligs = ['Target_WrapsMCL']
-        if self.coltension == 'H':
-            target_ligtens = 66
-        elif self.coltension == 'L':
-            target_ligtens = 4
+        target_ligtens = 4
         for klig in target_ligs:
             fid.write(f'variable modify  &\n')
             fid.write(f' variable_name = .{self.subject}.{klig} &\n')

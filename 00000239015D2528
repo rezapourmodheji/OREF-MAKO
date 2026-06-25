@@ -1,0 +1,29 @@
+ ----------------------------------------------------------
+ ------------------ Running the Code ----------------------
+ ----------------------------------------------------------
+															  
+															  
+S:\BiomechanicsResearch\groupImhauser\OREF TKA\Modeling\Data_Reduced\S026\model_inputs\CT_data\S026_Fem.stl
+<geomagic.api.v3.swig.Mesh; proxy of <Swig Object of type 'mesh::Mesh *' at 0x0000023903DA8270> >
+23934
+Fem has 12000 target triangles.
+reduct_factor 50.137879167711205
+Saved resected Fem: S:\BiomechanicsResearch\groupImhauser\OREF TKA\Modeling\Data_Reduced\S026\model_inputs\Geometries\S026_Fem.stl with 12000 triangles.
+S:\BiomechanicsResearch\groupImhauser\OREF TKA\Modeling\Data_Reduced\S026\model_inputs\CT_data\S026_Tib.stl
+<geomagic.api.v3.swig.Mesh; proxy of <Swig Object of type 'mesh::Mesh *' at 0x0000023903DA82A0> >
+20982
+Tib has 12000 target triangles.
+reduct_factor 57.19187875321704
+Saved resected Tib: S:\BiomechanicsResearch\groupImhauser\OREF TKA\Modeling\Data_Reduced\S026\model_inputs\Geometries\S026_Tib.stl with 12000 triangles.
+S:\BiomechanicsResearch\groupImhauser\OREF TKA\Modeling\Data_Reduced\S026\model_inputs\CT_data\S026_Fib.stl
+<geomagic.api.v3.swig.Mesh; proxy of <Swig Object of type 'mesh::Mesh *' at 0x0000023903DA8240> >
+2378
+Fib has 8000 target triangles.
+reduct_factor 336.417157275021
+Saved resected Fib: S:\BiomechanicsResearch\groupImhauser\OREF TKA\Modeling\Data_Reduced\S026\model_inputs\Geometries\S026_Fib.stl with 8000 triangles.
+S:\BiomechanicsResearch\groupImhauser\OREF TKA\Modeling\Data_Reduced\S026\model_inputs\CT_data\FemComp.stl
+Saved resected FemComp: S:\BiomechanicsResearch\groupImhauser\OREF TKA\Modeling\Data_Reduced\S026\model_inputs\Geometries\FemComp.stl
+S:\BiomechanicsResearch\groupImhauser\OREF TKA\Modeling\Data_Reduced\S026\model_inputs\CT_data\Tray.stl
+Saved resected Tray: S:\BiomechanicsResearch\groupImhauser\OREF TKA\Modeling\Data_Reduced\S026\model_inputs\Geometries\Tray.stl
+S:\BiomechanicsResearch\groupImhauser\OREF TKA\Modeling\Data_Reduced\S026\model_inputs\CT_data\Insert.stl
+Saved resected Insert: S:\BiomechanicsResearch\groupImhauser\OREF TKA\Modeling\Data_Reduced\S026\model_inputs\Geometries\Insert.stl

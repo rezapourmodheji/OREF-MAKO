@@ -103,8 +103,8 @@ def _get_planned_roi_params() -> dict:
         "tibial_rotation_coronal": _px_box(3450, 2770, 4050, 2930),
         "tibial_rotation_transverse": _px_box(3450, 2930, 4050, 3090),
         "tibial_rotation_sagittal": _px_box(3450, 3090, 4050, 3250),
-        "tibial_resect_c1" : _px_box(3320, 3510, 3750, 3670),
-        "tibial_resect_c2" : _px_box(3750, 3510, 4180, 3670),
+        "tibial_resect_c1" : _px_box(3320, 3530, 3750, 3690),
+        "tibial_resect_c2" : _px_box(3750, 3530, 4180, 3690),
     }
 
 
@@ -162,6 +162,29 @@ def _ocr_alignment(crop: Image.Image) -> str:
     return best
 
 
+def _ocr_directional(crop: Image.Image) -> str:
+    """
+    OCR a '<number>° <word>' field (rotations, alignment, posterior slope).
+
+    The numeric portion and the direction keyword are read in two separate
+    passes and recombined:
+
+      * The number is OCR'd with a digit whitelist (via ``_ocr_number``) so
+        glyphs like the open-top Mako '4' are not misread as letters such as
+        'A' (which previously made '4.0' parse as a bare '.0' -> 0).
+      * The keyword (varus/valgus/internal/external/flexion/extension/slope)
+        is OCR'd without a whitelist (via ``_ocr_alignment``).
+
+    The two results are combined into one string, e.g. ``"4.0 flexion"``, which
+    the existing parsers can interpret. If the number pass fails, the returned
+    string has no leading digit and the parsers return NaN instead of a
+    misleading 0.
+    """
+    number = _ocr_number(crop)
+    words = _ocr_alignment(crop)
+    return f"{number} {words}".strip()
+
+
 # ---------------------------------------------------------------------------
 # Parsers
 # ---------------------------------------------------------------------------
@@ -206,10 +229,12 @@ def _parse_femoral_rotation(text: str) -> float:
     OCR of 'varus'/'valgus'/'internal'/'external'/'flexion'/'extension' is fragile, so we match on the first few letters
     after the degree symbol ('varus/valgus' vs 'internal/external' vs 'flexion/extension').
     """
+    
     if not text:
         return float("nan")
 
     m = re.search(r"(\d+(?:\.\d+)?)", text.replace(",", "."))
+    
     if not m:
         return float("nan")
     value = float(m.group(1))
@@ -303,7 +328,7 @@ def read_mako_planned_plan(img_color: np.ndarray, isright: int = 1) -> dict:
         _ocr_number(_crop_roi(img_pil, p["component_size_insert"]))
     )
     result["planned_alignment"] = _parse_alignment(
-        _ocr_alignment(_crop_roi(img_pil, p["planned_alignment"]))
+        _ocr_directional(_crop_roi(img_pil, p["planned_alignment"]))
     )
     result["planned_laxity_extension_c1"] = _safe_float(
         _ocr_number(_crop_roi(img_pil, p["planned_laxity_extension_c1"]))
@@ -318,19 +343,19 @@ def read_mako_planned_plan(img_color: np.ndarray, isright: int = 1) -> dict:
         _ocr_number(_crop_roi(img_pil, p["planned_laxity_flexion_c2"]))
     )
     result["femoral_rotation_coronal"] = _parse_femoral_rotation(
-        _ocr_alignment(_crop_roi(img_pil, p["femoral_rotation_coronal"]))
+        _ocr_directional(_crop_roi(img_pil, p["femoral_rotation_coronal"]))
     )
     result["femoral_rotation_transverse"] = _parse_femoral_rotation(
-        _ocr_alignment(_crop_roi(img_pil, p["femoral_rotation_transverse"]))
+        _ocr_directional(_crop_roi(img_pil, p["femoral_rotation_transverse"]))
     )
     result["femoral_rotation_sagittal"] = _parse_femoral_rotation(
-        _ocr_alignment(_crop_roi(img_pil, p["femoral_rotation_sagittal"]))
+        _ocr_directional(_crop_roi(img_pil, p["femoral_rotation_sagittal"]))
     )
     result["postslope_medial"] = _parse_alignment(
-        _ocr_alignment(_crop_roi(img_pil, p["postslope_medial"]))
+        _ocr_directional(_crop_roi(img_pil, p["postslope_medial"]))
     )
     result["postslope_lateral"] = _parse_alignment(
-        _ocr_alignment(_crop_roi(img_pil, p["postslope_lateral"]))
+        _ocr_directional(_crop_roi(img_pil, p["postslope_lateral"]))
     )
     result["femoral_dist_resect_c1"] = _safe_float(
         _ocr_number(_crop_roi(img_pil, p["femoral_dist_resect_c1"]))
@@ -345,13 +370,13 @@ def read_mako_planned_plan(img_color: np.ndarray, isright: int = 1) -> dict:
         _ocr_number(_crop_roi(img_pil, p["femoral_post_resect_c2"]))
     )
     result["tibial_rotation_coronal"] = _parse_tibial_rotation(
-        _ocr_alignment(_crop_roi(img_pil, p["tibial_rotation_coronal"]))
+        _ocr_directional(_crop_roi(img_pil, p["tibial_rotation_coronal"]))
     )
     result["tibial_rotation_transverse"] = _parse_tibial_rotation(
-        _ocr_alignment(_crop_roi(img_pil, p["tibial_rotation_transverse"]))
+        _ocr_directional(_crop_roi(img_pil, p["tibial_rotation_transverse"]))
     )
     result["tibial_rotation_sagittal"] = _parse_tibial_rotation(
-        _ocr_alignment(_crop_roi(img_pil, p["tibial_rotation_sagittal"]))
+        _ocr_directional(_crop_roi(img_pil, p["tibial_rotation_sagittal"]))
     )
     result["tibial_resect_c1"] = _safe_float(
         _ocr_number(_crop_roi(img_pil, p["tibial_resect_c1"]))
@@ -417,23 +442,23 @@ def visualize_planned_rois(img_color: np.ndarray, save_path: str = None) -> Imag
         "component_size_femur":     _ocr_number(_crop_roi(img_pil, p["component_size_femur"])),
         "component_size_baseplate": _ocr_number(_crop_roi(img_pil, p["component_size_baseplate"])),
         "component_size_insert":    _ocr_number(_crop_roi(img_pil, p["component_size_insert"])),
-        "planned_alignment":        _ocr_alignment(_crop_roi(img_pil, p["planned_alignment"])),
+        "planned_alignment":        _ocr_directional(_crop_roi(img_pil, p["planned_alignment"])),
         "planned_laxity_extension_c1": _ocr_number(_crop_roi(img_pil, p["planned_laxity_extension_c1"])),
         "planned_laxity_flexion_c1": _ocr_number(_crop_roi(img_pil, p["planned_laxity_flexion_c1"])),
         "planned_laxity_extension_c2": _ocr_number(_crop_roi(img_pil, p["planned_laxity_extension_c2"])),
         "planned_laxity_flexion_c2": _ocr_number(_crop_roi(img_pil, p["planned_laxity_flexion_c2"])),
-        "femoral_rotation_coronal": _ocr_alignment(_crop_roi(img_pil, p["femoral_rotation_coronal"])),
-        "femoral_rotation_transverse": _ocr_alignment(_crop_roi(img_pil, p["femoral_rotation_transverse"])),
-        "femoral_rotation_sagittal": _ocr_alignment(_crop_roi(img_pil, p["femoral_rotation_sagittal"])),
-        "postslope_medial": _ocr_alignment(_crop_roi(img_pil, p["postslope_medial"])),
-        "postslope_lateral": _ocr_alignment(_crop_roi(img_pil, p["postslope_lateral"])),
+        "femoral_rotation_coronal": _ocr_directional(_crop_roi(img_pil, p["femoral_rotation_coronal"])),
+        "femoral_rotation_transverse": _ocr_directional(_crop_roi(img_pil, p["femoral_rotation_transverse"])),
+        "femoral_rotation_sagittal": _ocr_directional(_crop_roi(img_pil, p["femoral_rotation_sagittal"])),
+        "postslope_medial": _ocr_directional(_crop_roi(img_pil, p["postslope_medial"])),
+        "postslope_lateral": _ocr_directional(_crop_roi(img_pil, p["postslope_lateral"])),
         "femoral_dist_resect_c1": _ocr_number(_crop_roi(img_pil, p["femoral_dist_resect_c1"])),
         "femoral_dist_resect_c2": _ocr_number(_crop_roi(img_pil, p["femoral_dist_resect_c2"])),
         "femoral_post_resect_c1": _ocr_number(_crop_roi(img_pil, p["femoral_post_resect_c1"])),
         "femoral_post_resect_c2": _ocr_number(_crop_roi(img_pil, p["femoral_post_resect_c2"])),
-        "tibial_rotation_coronal": _ocr_alignment(_crop_roi(img_pil, p["tibial_rotation_coronal"])),
-        "tibial_rotation_transverse": _ocr_alignment(_crop_roi(img_pil, p["tibial_rotation_transverse"])),
-        "tibial_rotation_sagittal": _ocr_alignment(_crop_roi(img_pil, p["tibial_rotation_sagittal"])),
+        "tibial_rotation_coronal": _ocr_directional(_crop_roi(img_pil, p["tibial_rotation_coronal"])),
+        "tibial_rotation_transverse": _ocr_directional(_crop_roi(img_pil, p["tibial_rotation_transverse"])),
+        "tibial_rotation_sagittal": _ocr_directional(_crop_roi(img_pil, p["tibial_rotation_sagittal"])),
         "tibial_resect_c1": _ocr_number(_crop_roi(img_pil, p["tibial_resect_c1"])),
         "tibial_resect_c2": _ocr_number(_crop_roi(img_pil, p["tibial_resect_c2"])),
     }

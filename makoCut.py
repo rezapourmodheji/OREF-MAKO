@@ -192,7 +192,7 @@ def fem_csys(landmarks: dict, plan: dict, side: bool) -> tuple:
     # Translation: express the knee center in the Mako frame
     # After this transform, the knee center maps to the origin.
     # Note: uses Tibia_Knee_Center for both tibia and femur branches in MATLAB by Fernando's design
-    Tmako = Rmako @ (-landmarks['TibKneeCenter'])         # (3,)
+    Tmako = Rmako @ (-landmarks['FemKneeCenter'])         # (3,)
 
     
 
@@ -221,9 +221,10 @@ def fem_csys(landmarks: dict, plan: dict, side: bool) -> tuple:
     #   zrot > 0 → internal rotation (right: -Z, left: +Z)
     # Rotation order: sagittal (X) first, then coronal (Y), then axial (Z)
     # Each new rotation is PRE-multiplied
+
     xrot = -plan['flexion']
-    yrot = plan['varus']
-    zrot = -plan['internal']
+    yrot = -plan['varus']*side_sign
+    zrot = -plan['internal']*side_sign
 
     def Rx(deg):
         c, s = np.cos(np.radians(deg)), np.sin(np.radians(deg))

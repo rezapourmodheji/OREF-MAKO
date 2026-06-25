@@ -1,0 +1,14 @@
+[
+    {  "Size" : 5,
+    "DistPosition": [0, 0, -15.62],
+    "DistNormal": [0, 0, 1],
+    "PostPosition": [0, -17.83, 0],
+    "PostNormal": [0, 1, 0],
+    "PostDistPosition": [0, -13.2574, -10.9724],
+    "PostDistNormal": [0, 0.7071, 0.7071],
+    "AntDistPosition": [1.3415, 22.7551, -4.5238],
+    "AntDistNormal": [0, -0.7071, 0.7071],
+    "AntPosition": [0, 33.0342, 25.2548],
+    "AntNormal": [0, -0.995, 0.0999]
+    }
+]

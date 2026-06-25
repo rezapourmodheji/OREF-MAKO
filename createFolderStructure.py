@@ -13,7 +13,7 @@ from pathlib import Path
 
 # Base study path (Windows style)
 study = Path(r'S:\BiomechanicsResearch\groupImhauser\OREF TKA\Modeling')
-subjects = ['S026','S030']
+subjects = ['S044']
 
 # ── Main ───────────────────────────────────────────────────────────────────────
 def create_subject_structure():

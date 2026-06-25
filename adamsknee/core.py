@@ -33,14 +33,13 @@ class AdamsKnee(AdamsRunnerMixin,
                 ):
 
     def __init__(self,
-                subject, case, side, coltension,
+                subject,
+                side,
                 study_root,
                 adams_mdi = r'C:/Program Files/MSC.Software/Adams/2021_4_856550/common/mdi.bat',
                 ):
         self.subject = subject
-        self.case = case
         self.side = side
-        self.coltension = coltension
         self.study_root = Path(study_root)
         self.adams_mdi = Path(adams_mdi)
         
@@ -48,7 +47,7 @@ class AdamsKnee(AdamsRunnerMixin,
         # Derived paths
         self.data_raw_dir       = self.study_root / "Data_Raw"
         self.data_reduced_dir   = self.study_root / "Data_Reduced"
-        self.subject_dir        = self.study_root / "Data_Reduced" / "Subjects" / subject / case / coltension
+        self.subject_dir        = self.study_root / "Data_Reduced" /  subject 
         self.cmd_dir            = self.subject_dir / "Macros and CMD"
         self.geom_dir           = self.subject_dir / "model_inputs" / "Geometries"
         self.model_inputs_dir   = self.subject_dir / "model_inputs"
